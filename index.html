@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>the purgatory</title>
+<title>iajer help</title>
 <style>
 body {
     background-color: black;
     animation: flicker 0.1s infinite;
     font-family: "Comic Sans MS", cursive, sans-serif;
     overflow: hidden;
+    color: white; /* Default text color */
 }
 
 @keyframes flicker {
@@ -16,57 +17,66 @@ body {
     100% { background-color: black; color: white; }
 }
 
-#flickering-text {
+#content {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2em;
-    text-align: center; 
-}
-
-#image-container { 
-    position: absolute;
-    top: 60%; 
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center; 
-}
-
-#my-image { 
-    max-width: 200px; 
-    max-height: 200px; 
-}
-
-#small-text {
-    position: absolute; 
-    bottom: 20px; 
-    left: 50%;
-    transform: translateX(-50%); 
-    color: white; 
     text-align: center;
+}
+
+#ip-address {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+#location {
+    font-size: 1.2em;
 }
 </style>
 </head>
 <body>
 
-<div id="flickering-text">lol</div>
+<div id="content">
+    <div id="ip-address">Loading IP...</div>
+    <div id="location">Loading location...</div>
+</div>
 
 <script>
-    const ipText = document.getElementById("flickering-text");
+    const ipAddressElement = document.getElementById("ip-address");
+    const locationElement = document.getElementById("location");
 
+    // Get IP address
     fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-            ipText.textContent = data.ip;
-        })
-        .catch(error => {
-            ipText.textContent = "Error getting IP";
-            console.error("Error fetching IP:", error);
-        });
-</script>
+            ipAddressElement.textContent = data.ip;
 
-<p id="small-text">haha funnies</p>
+            // Get location (using a free geolocation service - limited accuracy)
+            fetch(`https://ipapi.co/${data.ip}/json/`) // Replace with your preferred service
+                .then(locationResponse => locationResponse.json())
+                .then(locationData => {
+                    if (locationData.city && locationData.region) { // Check if data exists
+                        locationElement.textContent = `${locationData.city}, ${locationData.region}`;
+                    } else if (locationData.country_name) {
+                        locationElement.textContent = `${locationData.country_name}`;
+                    }
+                    else {
+                        locationElement.textContent = "Location information not available";
+                    }
+                })
+                .catch(locationError => {
+                    locationElement.textContent = "Error getting location";
+                    console.error("Error fetching location:", locationError);
+                });
+
+        })
+        .catch(ipError => {
+            ipAddressElement.textContent = "Error getting IP";
+            console.error("Error fetching IP:", ipError);
+        });
+
+</script>
 
 </body>
 </html>
