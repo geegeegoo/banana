@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>the purgatory</title>
+<style>
+body {
+    background-color: black;
+    animation: flicker 0.1s infinite;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    overflow: hidden;
+}
+
+@keyframes flicker {
+    0% { background-color: black; color: white; }
+    50% { background-color: white; color: black; }
+    100% { background-color: black; color: white; }
+}
+
+#flickering-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    text-align: center; 
+}
+
+#image-container { 
+    position: absolute;
+    top: 60%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center; 
+}
+
+#my-image { 
+    max-width: 200px; 
+    max-height: 200px; 
+}
+
+#small-text {
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    color: white; 
+    text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div id="flickering-text">lol</div>
+
+<script>
+    const ipText = document.getElementById("flickering-text");
+
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            ipText.textContent = data.ip;
+        })
+        .catch(error => {
+            ipText.textContent = "Error getting IP";
+            console.error("Error fetching IP:", error);
+        });
+</script>
+
+<p id="small-text">haha funnies</p>
+
+</body>
+</html>
